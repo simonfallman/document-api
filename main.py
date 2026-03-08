@@ -18,6 +18,7 @@ app = FastAPI(
     ),
     version="1.0.0",
     lifespan=lifespan,
+    root_path="/api",
 )
 
 app.include_router(documents.router)
