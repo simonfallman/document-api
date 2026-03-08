@@ -1,0 +1,23 @@
+# API
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic-settings
+
+# RAG / LangChain
+langchain
+langchain-aws
+langchain-community
+langchain-text-splitters
+boto3
+
+# Vector store
+chromadb
+
+# Document loaders
+pypdf
+docx2txt
+
+# Utilities
+python-dotenv
+sqlalchemy

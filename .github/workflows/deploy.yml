@@ -1,0 +1,47 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pytest httpx
+
+      - name: Run tests
+        run: python -m pytest tests/ -v
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: 89.167.107.181
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /root/document-api
+            git pull
+            docker stop document-api || true
+            docker rm document-api || true
+            docker build -t document-api .
+            docker run -d \
+              --name document-api \
+              -p 8000:8000 \
+              -v /root/document-api/data:/app/data \
+              --env-file .env \
+              --restart unless-stopped \
+              document-api
+
+      - name: Health check
+        run: |
+          sleep 10
+          curl -f https://simonfallman.xyz/api/health
