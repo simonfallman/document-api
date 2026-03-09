@@ -3,13 +3,14 @@ Unit tests for RAG pipeline helpers.
 Ported and extended from the chatbot's test_pipeline.py.
 No AWS calls needed — only tests pure Python logic.
 """
+import os
 import pytest
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from unittest.mock import MagicMock
 
 from services.storage import file_hash, SUPPORTED_SUFFIXES
-from services.rag import SUMMARIZE_TRIGGERS, FAQ_TRIGGERS, multi_retrieve, format_docs
+from services.rag import SUMMARIZE_TRIGGERS, FAQ_TRIGGERS, multi_retrieve, format_docs, _get_llm
 
 
 # ── Chunking ──────────────────────────────────────────────────────────────────
@@ -133,3 +134,16 @@ def test_format_docs_joins_with_double_newline():
 def test_format_docs_single_doc():
     docs = [Document(page_content="only")]
     assert format_docs(docs) == "only"
+
+
+# ── Integration: real Bedrock call ────────────────────────────────────────────
+
+@pytest.mark.skipif(
+    not os.environ.get("AWS_ACCESS_KEY_ID"),
+    reason="No AWS credentials — skipping live Bedrock test",
+)
+def test_llm_bedrock_call_succeeds():
+    """Smoke test: confirms the configured model ID is valid and reachable."""
+    llm = _get_llm()
+    response = llm.invoke("Reply with the single word: ok")
+    assert response.content.strip()
