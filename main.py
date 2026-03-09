@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from database import init_db
-from routers import documents, ask, conversations, admin
+from routers import documents, ask, conversations, admin, chat
 
 
 @asynccontextmanager
@@ -25,6 +25,7 @@ app.include_router(documents.router)
 app.include_router(ask.router)
 app.include_router(conversations.router)
 app.include_router(admin.router)
+app.include_router(chat.router)
 
 
 @app.get("/health", tags=["health"])
