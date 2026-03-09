@@ -26,7 +26,7 @@ FAQ_TRIGGERS = re.compile(
 
 def _get_llm() -> ChatBedrock:
     return ChatBedrock(
-        model_id="anthropic.claude-3-5-haiku-20241022-v1:0",
+        model_id="us.anthropic.claude-3-5-haiku-20241022-v1:0",
         region_name=settings.aws_region,
         model_kwargs={"temperature": 0},
     )
