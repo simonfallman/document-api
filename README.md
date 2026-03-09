@@ -14,7 +14,7 @@ Live at **[simonfallman.xyz/api/docs](https://simonfallman.xyz/api/docs)**
 ## Stack
 
 - **FastAPI** — REST API with auto-generated Swagger docs
-- **AWS Bedrock** — Amazon Titan for embeddings, Claude 3 Haiku for generation
+- **AWS Bedrock** — Amazon Titan for embeddings, Claude 3.5 Haiku for generation
 - **ChromaDB** — vector store, one collection per document (MD5-keyed, idempotent)
 - **LangChain** — RAG pipeline with LCEL and conversation history
 - **SQLite** — API keys, conversations, rate limiting, usage logs
@@ -59,7 +59,7 @@ Requests flow through API key auth → rate limiting (60 req/min per key) → th
 1. Uploaded files are chunked with `RecursiveCharacterTextSplitter` (500 tokens, 50 overlap)
 2. Chunks are embedded via Amazon Titan and stored in ChromaDB
 3. On each question, relevant chunks are retrieved across all selected documents
-4. Claude 3 Haiku generates an answer grounded in the retrieved context
+4. Claude 3.5 Haiku generates an answer grounded in the retrieved context
 5. Conversation history is persisted in SQLite via LangChain's `SQLChatMessageHistory`
 
 ## Running locally
@@ -75,7 +75,7 @@ uvicorn main:app --reload
 ```
 
 ```bash
-# Run tests (no AWS credentials needed — Bedrock is mocked)
+# Run tests (AWS credentials optional — skips live Bedrock test if not set)
 python -m pytest tests/ -v
 ```
 
